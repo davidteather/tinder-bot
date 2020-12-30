@@ -21,8 +21,8 @@ for p in data['profiles']:
         images.append(image)
 
 index = -1
-index += len([name for name in os.listdir(folder) if os.path.isfile(os.path.join(folder, name))]) * 10
-for i in images:
+index += len([name for name in os.listdir(folder) if os.path.isfile(os.path.join(folder, name))]) * 100
+for i in images[:5000]:
     index += 1
     req = requests.get(i, stream=True)
     if req.status_code == 200:
