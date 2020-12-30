@@ -47,6 +47,24 @@ class Tinder:
             fix_hairline=True,
         )
 
+    def __handle_homescreen_popup(self):
+        try:
+            add_tinder_to_homescreen = self.driver.find_elements_by_xpath(
+                "//button[@data-testid='addToHomeScreen']/parent::*/button")[1]
+            add_tinder_to_homescreen.click()
+        except:
+            pass
+
+    def __handle_no_more_matches(self):
+        try:
+            i = self.driver.find_elements_by_xpath("//div[@class='Pos(a) B(20px) Ta(c) C($c-secondary) Px(28px) Fz($s)']")
+            if len(i) != 0:
+                item = i[0]
+                if "unable to find any potential matches" in item.text.strip().lower():
+                    self.driver.refresh()
+        except:
+            pass
+
     def login_google(self, username, password):
         url = ("https://accounts.google.com/o/oauth2/auth/oauthchooseaccount?redirect_uri=storagerelay"
                "%3A%2F%2Fhttps%2Ftinder.com%3Fid%3Dauth133997&response_type=permission id_token&scope=email "
@@ -172,12 +190,9 @@ class Tinder:
         skip_button.click()
         time.sleep(0.3)
 
-        try:
-            add_tinder_to_homescreen = self.driver.find_elements_by_xpath(
-                "//button[@data-testid='addToHomeScreen']/parent::*/button")[1]
-            add_tinder_to_homescreen.click()
-        except:
-            pass
+        self.__handle_no_more_matches()
+        self.__handle_homescreen_popup()
+        
 
     def like(self):
         like_button = self.driver.find_elements_by_xpath(
@@ -185,6 +200,10 @@ class Tinder:
         )[2]
         like_button.click()
         time.sleep(0.3)
+
+        self.__handle_no_more_matches()
+        self.__handle_homescreen_popup()
+        
 
     def extract_current(self):
         main_card = self.driver.find_elements_by_xpath(
