@@ -1,7 +1,7 @@
 import os
 import json
 
-files = ['data_1.json', "data_2.json", "data_3.json"]
+files = ['data_1.json', "data_2.json"]
 
 all_profiles = []
 

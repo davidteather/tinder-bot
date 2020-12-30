@@ -62,6 +62,8 @@ class Tinder:
                 item = i[0]
                 if "unable to find any potential matches" in item.text.strip().lower():
                     self.driver.refresh()
+                    time.sleep(3)
+                    self.__handle_homescreen_popup()
         except:
             pass
 
