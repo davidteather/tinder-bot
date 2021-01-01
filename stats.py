@@ -1,7 +1,7 @@
 import statistics
 import json
 
-with open("data_1.json", 'r', encoding='utf-8') as i:
+with open("data.json", 'r', encoding='utf-8') as i:
     data = json.loads(i.read())
 
 print(f"# Of Profiles: {len(data['profiles'])}")

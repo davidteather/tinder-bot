@@ -7,7 +7,7 @@ import time
 
 
 class Tinder:
-    def __init__(self):
+    def __init__(self, coords=None):
         options = webdriver.ChromeOptions()
         options.add_argument("start-maximized")
         options.add_argument("start-maximized")
@@ -29,13 +29,14 @@ class Tinder:
         self.driver = webdriver.Chrome(options=options)
 
         # Madison, WI Coords
-        coords = {
-            "latitude": 43.073051,
-            "longitude": -89.40123,
-            "accuracy": 98,
-        }
+        #coords = {
+        #    "latitude": 43.073051,
+        #    "longitude": -89.40123,
+        #    "accuracy": 98,
+        #}
 
-        self.driver.execute_cdp_cmd("Page.setGeolocationOverride", coords)
+        if coords != None:
+            self.driver.execute_cdp_cmd("Page.setGeolocationOverride", coords)
 
         stealth(
             self.driver,
