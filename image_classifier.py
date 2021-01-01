@@ -15,7 +15,6 @@ def next_img():
         current = next(unclassified_images)
     except StopIteration:
         root.quit()
-    print(current)
     pil_img = Image.open(IMAGE_FOLDER+"/"+current)
     width, height = pil_img.size
     max_height = 1000

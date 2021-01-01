@@ -50,8 +50,13 @@ class Tinder:
     def __handle_homescreen_popup(self):
         try:
             add_tinder_to_homescreen = self.driver.find_elements_by_xpath(
-                "//button[@data-testid='addToHomeScreen']/parent::*/button")[1]
+                '//*[@id="modal-manager"]/div/div/div[2]/button[2]')[0]
             add_tinder_to_homescreen.click()
+        except:
+            pass
+
+        try:
+            btn = self.driver.find_elements_by_xpath("//div[@role='dialog']/button")[1].click()
         except:
             pass
 
@@ -207,7 +212,7 @@ class Tinder:
         self.__handle_homescreen_popup()
         
 
-    def extract_current(self):
+    def extract_current(self, all_images=True):
         main_card = self.driver.find_elements_by_xpath(
             "//span[@class='keen-slider__slide Wc($transform) Fxg(1)']/div"
         )[1]
@@ -223,29 +228,62 @@ class Tinder:
         else:
             bio = bio_wrapper[0].text
 
-        image_count = len(
-            self.driver.find_elements_by_xpath(
-                "//div[@aria-hidden='false']/div/div[@class='CenterAlign D(f) Fxd(r) W(100%) Px(8px) Pos(a) TranslateZ(0)']/button"
-            )
-        )
+        school = None
+
         images = []
-
-        body = self.driver.find_element_by_xpath("//body")
-        for i in range(image_count+2):
-            image = (
+        if all_images:
+            image_count = len(
                 self.driver.find_elements_by_xpath(
-                    f"//div[@class='Expand Pos(a) D(f) Ov(h) Us(n) keen-slider']/span/div[@aria-label='{name}']"
-                )[0]
-                .get_attribute("outerHTML")
-                .split("url(&quot;")[1]
-                .split('&quot;);')[0]
+                    "//div[@aria-hidden='false']/div/div[@class='CenterAlign D(f) Fxd(r) W(100%) Px(8px) Pos(a) TranslateZ(0)']/button"
+                )
             )
-            if image not in images:
-                images.append(image)
-            body.send_keys(Keys.SPACE)
-            time.sleep(0.3)
+            
 
-        return {"name": name, "bio": bio, "images": images}
+            body = self.driver.find_element_by_xpath("//body")
+            for i in range(image_count+2):
+                try:
+                    image = (
+                        self.driver.find_elements_by_xpath(
+                            f"//div[@class='Expand Pos(a) D(f) Ov(h) Us(n) keen-slider']/span/div[@aria-label='{name}']"
+                        )[0]
+                        .get_attribute("outerHTML")
+                        .split("url(&quot;")[1]
+                        .split('&quot;);')[0]
+                    )
+                except IndexError:
+                    time.sleep(3)
+                    try:
+                        image = (
+                            self.driver.find_elements_by_xpath(
+                                f"//div[@class='Expand Pos(a) D(f) Ov(h) Us(n) keen-slider']/span/div[@aria-label='{name}']"
+                            )[0]
+                            .get_attribute("outerHTML")
+                            .split("url(&quot;")[1]
+                            .split('&quot;);')[0]
+                        )
+                    except IndexError:
+                        continue
+                schools = self.driver.find_elements_by_xpath("//div[@aria-hidden='false']/div/div/div/div/div/div/div[@itemprop='affiliation']")
+
+                if len(schools) != 0 and school == None:
+                    school = schools[0].text
+                if image not in images:
+                    images.append(image)
+                body.send_keys(Keys.SPACE)
+                time.sleep(0.4)
+        else:
+            image = (
+                    self.driver.find_elements_by_xpath(
+                        f"//div[@class='Expand Pos(a) D(f) Ov(h) Us(n) keen-slider']/span/div[@aria-label='{name}']"
+                    )[0]
+                    .get_attribute("outerHTML")
+                    .split("url(&quot;")[1]
+                    .split('&quot;);')[0]
+                )
+            images.append(image)
+
+
+        return {"name": name, "bio": bio, "images": images, 'school': school}
 
     def slide_current(self):
         e = self.driver.find_element_by_xpath("//div[@aria-live='polite']")
